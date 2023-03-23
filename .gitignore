@@ -1,2 +1,4 @@
 .vscode
 fly.toml
+
+*__debug_bin
