@@ -22,9 +22,9 @@ func (c Command) Register(s *discordgo.Session) error {
 		return err
 	}
 
-	for _, c := range commands {
-		if c.Name == c.Name {
-			_, err := s.ApplicationCommandEdit(s.State.User.ID, "", c.ID, c)
+	for _, co := range commands {
+		if c.Name == co.Name {
+			_, err := s.ApplicationCommandEdit(s.State.User.ID, "", co.ID, c.ApplicationCommand)
 			return err
 		}
 	}

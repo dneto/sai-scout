@@ -2,8 +2,8 @@ package database
 
 // Card represents the card structure present in LoR Data Dragon
 type Card struct {
-	AssociatedCards    []interface{} `json:"associatedCards"`
-	AssociatedCardRefs []interface{} `json:"associatedCardRefs"`
+	AssociatedCards    []string `json:"associatedCards"`
+	AssociatedCardRefs []string `json:"associatedCardRefs"`
 	Assets             []struct {
 		GameAbsolutePath string `json:"gameAbsolutePath"`
 		FullAbsolutePath string `json:"fullAbsolutePath"`
@@ -32,4 +32,14 @@ type Card struct {
 	Type                  string   `json:"type"`
 	Collectible           bool     `json:"collectible"`
 	Set                   string   `json:"set"`
+}
+
+type cards []Card
+
+func (cs cards) String(i int) string {
+	return cs[i].Name
+}
+
+func (cs cards) Len() int {
+	return len(cs)
 }

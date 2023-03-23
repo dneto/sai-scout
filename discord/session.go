@@ -29,6 +29,7 @@ func StartSession(token string) (*Session, error) {
 		session: discordSession,
 	}
 
+	session.session.UpdateWatchStatus(0, fmt.Sprintf("%d servers", len(discordSession.State.Guilds)))
 	discordSession.AddHandler(session.HandleInteraction)
 
 	return session, nil
@@ -67,7 +68,7 @@ func (s *Session) HandleInteraction(ss *discordgo.Session, i *discordgo.Interact
 
 		err = ss.InteractionRespond(i.Interaction, resp)
 		if err != nil {
-			fmt.Println(err)
+			errorResponse(ss, i, errors.New("Unknown error"))
 		}
 	}
 }

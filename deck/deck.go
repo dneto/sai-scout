@@ -3,8 +3,8 @@ package deck
 import (
 	"sort"
 
+	lordeckcode "github.com/dneto/lor-deckcode-go"
 	"github.com/dneto/sai-scout/database"
-	lordeckcode "github.com/m0t0k1ch1/lor-deckcode-go"
 	"github.com/samber/lo"
 )
 

@@ -43,6 +43,7 @@ func main() {
 	dec := deck.NewDecoder(db)
 
 	s.AddComand(commands.DeckCommand(dec))
+	s.AddComand(commands.SearchCommand(db))
 
 	log.Print("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)
