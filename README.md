@@ -1,5 +1,6 @@
-[![Invite](https://img.shields.io/badge/Invite-7289da?logo=discord&logoColor=white&&style=flat)](https://discord.com/api/oauth2/authorize?client_id=1086224659231559680&permissions=0&scope=bot)
 # Sai Scout
+
+[![Invite](https://img.shields.io/badge/Invite-7289da?logo=discord&logoColor=white&&style=flat)](https://discord.com/api/oauth2/authorize?client_id=1086224659231559680&permissions=0&scope=bot)
 
 ## Overview
 
