@@ -10,6 +10,7 @@ import (
 	"github.com/dneto/sai-scout/discord"
 	"github.com/dneto/sai-scout/regions"
 	"github.com/samber/lo"
+	"golang.org/x/text/width"
 )
 
 type DeckDecoder interface {
@@ -30,11 +31,11 @@ var DeckCommand = func(decoder DeckDecoder) *discord.Command {
 				},
 			},
 		},
-		handler(decoder),
+		deckCommandHandler(decoder),
 	)
 }
 
-func handler(decoder DeckDecoder) func(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+func deckCommandHandler(decoder DeckDecoder) func(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
 	return func(s *discordgo.Session, i *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
 		options := i.ApplicationCommandData().Options
 		deckCode := options[0].Value.(string)
@@ -54,22 +55,32 @@ func handler(decoder DeckDecoder) func(s *discordgo.Session, i *discordgo.Intera
 		}
 
 		typesShowOrder := []string{"Champions", "Followers", "Spells", "Landmarks", "Equipments"}
-		fields := make([]*discordgo.MessageEmbedField, len(typesShowOrder))
-		for i, t := range typesShowOrder {
-			cardsByTypeT := cardsByType[t]
-
-			if len(cardsByTypeT) == 0 {
+		fields := []*discordgo.MessageEmbedField{}
+		for _, t := range typesShowOrder {
+			if len(cardsByType[t]) == 0 {
 				continue
 			}
 
-			cards := lo.Map(cardsByTypeT, func(de deck.DeckEntry, _ int) string {
+			cards := lo.Map(cardsByType[t], func(de deck.DeckEntry, _ int) string {
 				return cardToStr(de)
 			})
 
-			fields[i] = &discordgo.MessageEmbedField{
+			cs := lo.Chunk(cards, 10)
+
+			fields = append(fields, &discordgo.MessageEmbedField{
 				Name:   t,
-				Value:  strings.Join(cards, "\n"),
+				Value:  strings.Join(cs[0], "\n"),
 				Inline: true,
+			})
+
+			for _, c := range cs[1:] {
+				title := "ㅤ"
+				inline := true
+				fields = append(fields, &discordgo.MessageEmbedField{
+					Name:   title,
+					Value:  strings.Join(c, "\n"),
+					Inline: inline,
+				})
 			}
 		}
 
@@ -78,6 +89,17 @@ func handler(decoder DeckDecoder) func(s *discordgo.Session, i *discordgo.Intera
 				{
 					Title:  deckCode,
 					Fields: fields,
+				},
+			},
+			Components: []discordgo.MessageComponent{
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.Button{
+							Style: discordgo.LinkButton,
+							Label: "View on Runeterra AR",
+							URL:   "https://runeterra.ar/decks/code/" + deckCode,
+						},
+					},
 				},
 			},
 		}
@@ -103,24 +125,27 @@ func cardToStr(c deck.DeckEntry) string {
 		rs = rs + regions.Emote(r)
 	}
 
-	return fmt.Sprintf("%s %s %s | **%d**", costEmoji[c.Card.Cost], rs, c.Card.Name, c.Count)
+	n := width.Widen.String(fmt.Sprint(c.Count))
+	return fmt.Sprintf("**%s** %s%s %s", n, rs, costEmoji[c.Card.Cost], c.Card.Name)
 }
 
 var costEmoji = map[int]string{
-	0:  "<:0_:1086337952310906983>",
-	1:  "<:1_:1086331931286851654>",
-	2:  "<:2_:1086333429311877170>",
-	3:  "<:3_:1086333430712782948>",
-	4:  "<:4_:1086333433086746816>",
-	5:  "<:5_:1086333434433122504>",
-	6:  "<:6_:1086333436811296899>",
-	7:  "<:7_:1086333437876650050>",
-	8:  "<:8_:1086333439407554592>",
-	9:  "<:9_:1086333441785737366>",
-	10: "<:10:1086333443085971508>",
-	11: "<:11:1086333445350891741>",
-	12: "<:12:1086333481979756584>",
-	13: "<:13:1086333447645188106>",
-	14: "<:14:1086333450295984228>",
-	15: "<:15:1086333483032518768>",
+	0:  "<:0_:1088290496906018869>",
+	1:  "<:1_:1088291515400466524>",
+	2:  "<:2_:1088291517069787147>",
+	3:  "<:3_:1088291520072925274>",
+	4:  "<:4_:1088291522589495406>",
+	5:  "<:5_:1088291525303210034>",
+	6:  "<:6_:1088291527899480084>",
+	7:  "<:7_:1088293024435556394>",
+	8:  "<:8_:1088293026541097020>",
+	9:  "<:9_:1088293029070262282>",
+	10: "<:10:1088293030471155762>",
+	11: "<:11:1088293032845115464>",
+	12: "<:12:1088293034787086346>",
+	13: "<:13:1088293037261717524>",
+	14: "<:14:1088293040155807755>",
+	15: "<:15:1088293041594433637>",
+	16: "<:16:1088293042957602816>",
+	17: "<:17:1088293045490958356>",
 }

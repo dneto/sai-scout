@@ -29,7 +29,7 @@ var _ = Describe("DeckCommand", func() {
 				}, nil
 			}
 
-			h := handler(decoder)
+			h := deckCommandHandler(decoder)
 			session := &discordgo.Session{}
 			interaction := &discordgo.InteractionCreate{
 				Interaction: &discordgo.Interaction{
@@ -62,28 +62,42 @@ var _ = Describe("DeckCommand", func() {
 				[]*discordgo.MessageEmbedField{
 					{
 						Name:   "Champions",
-						Value:  "<:1_:1086331931286851654> <:nx:1086330895214071921> Annie | **1**",
+						Value:  "**１** <:nx:1088276202944479342><:1_:1088291515400466524> Annie",
 						Inline: true,
 					},
 					{
 						Name:   "Followers",
-						Value:  "<:1_:1086331931286851654> <:nx:1086330895214071921> Crimson Pigeon | **1**",
+						Value:  "**１** <:nx:1088276202944479342><:1_:1088291515400466524> Crimson Pigeon",
 						Inline: true,
 					},
 					{
 						Name:   "Spells",
-						Value:  "<:1_:1086331931286851654> <:nx:1086330895214071921> Blade's Edge | **1**",
+						Value:  "**１** <:nx:1088276202944479342><:1_:1088291515400466524> Blade's Edge",
 						Inline: true,
 					},
 					{
 						Name:   "Landmarks",
-						Value:  "<:1_:1086331931286851654> <:nx:1086330895214071921> Ravenbloom Conservatory | **1**",
+						Value:  "**１** <:nx:1088276202944479342><:1_:1088291515400466524> Ravenbloom Conservatory",
 						Inline: true,
 					},
 					{
 						Name:   "Equipments",
-						Value:  "<:1_:1086331931286851654> <:nx:1086330895214071921> The Darkin Ballista | **1**",
+						Value:  "**１** <:nx:1088276202944479342><:1_:1088291515400466524> The Darkin Ballista",
 						Inline: true,
+					},
+				},
+			))
+		})
+
+		It("should have Runeterra AR button", func() {
+			Expect(resp.Data.Components[0]).To(Equal(
+				discordgo.ActionsRow{
+					Components: []discordgo.MessageComponent{
+						discordgo.Button{
+							Style: discordgo.LinkButton,
+							Label: "View on Runeterra AR",
+							URL:   "https://runeterra.ar/decks/code/" + "DECKCODE",
+						},
 					},
 				},
 			))

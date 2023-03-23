@@ -48,17 +48,17 @@ var regionRef = map[Region]string{
 }
 
 var emote = map[Region]string{
-	Demacia:      "<:de:1086330563151024239>",
-	Freljord:     "<:fr:1086325335508926495>",
-	Noxus:        "<:nx:1086330895214071921>",
-	Ionia:        "<:io:1086330367771934790>",
-	PiltoverZaun: "<:pz:1086330622022258738>",
-	ShadowIsles:  "<:si:1086329487337214145>",
-	Bilgewater:   "<:bw:1086330365154697278>",
-	Shurima:      "<:sh:1086330373333602425>",
-	Targon:       "<:mt:1086330369420308511>",
-	BandleCity:   "<:bc:1086330363841876058>",
-	Runeterra:    "<:ru:1086330371844624525>",
+	Demacia:      "<:de:1088275845698818109>",
+	Freljord:     "<:fr:1088274715405209600>",
+	Noxus:        "<:nx:1088276202944479342>",
+	Ionia:        "<:io:1088274155755028520>",
+	PiltoverZaun: "<:pz:1088276832383668254>",
+	ShadowIsles:  "<:si:1088278489356042332>",
+	Bilgewater:   "<:bw:1088278952830832671>",
+	Shurima:      "<:sh:1088282276753846272>",
+	Targon:       "<:mt:1088281324177076244>",
+	BandleCity:   "<:bc:1088281710996770878>",
+	Runeterra:    "<:ru:1088281714721300511>",
 }
 
 func (r *Region) Short() string {
