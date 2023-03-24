@@ -89089,5 +89089,363 @@
       "client_Formats_Eternal_name",
       "client_Formats_Standard_name"
     ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [
+      "05PZ008"
+    ],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07PZ017.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07PZ017-full.png"
+      }
+    ],
+    "regions": [
+      "Piltover & Zaun"
+    ],
+    "regionRefs": [
+      "PiltoverZaun"
+    ],
+    "attack": 1,
+    "cost": 2,
+    "health": 3,
+    "description": "When you play a spell, plant 1 <link=card.trap><style=AssociatedCard>Flashbomb Trap</style></link> randomly in the top 8 cards of the enemy deck.",
+    "descriptionRaw": "When you play a spell, plant 1 Flashbomb Trap randomly in the top 8 cards of the enemy deck.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "\"...And you know what else makes these babies better than mushrooms? You decide when they explode! How's THAT for value?\"",
+    "artistName": "Kudos Productions",
+    "name": "Flashbomb Peddler",
+    "cardCode": "07PZ017",
+    "keywords": [
+      "Imbue"
+    ],
+    "keywordRefs": [
+      "Imbue"
+    ],
+    "spellSpeed": "",
+    "spellSpeedRef": "",
+    "rarity": "RARE",
+    "rarityRef": "Rare",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Unit",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07PZ009.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07PZ009-full.png"
+      }
+    ],
+    "regions": [
+      "Piltover & Zaun"
+    ],
+    "regionRefs": [
+      "PiltoverZaun"
+    ],
+    "attack": 2,
+    "cost": 4,
+    "health": 2,
+    "description": "<link=vocab.Play><style=Vocab>Play</style></link>: <link=vocab.Predict><style=Vocab>Predict</style></link>, then draw 1 and reduce its cost by 1.",
+    "descriptionRaw": "Play: Predict, then draw 1 and reduce its cost by 1.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "“This little guy just needed a bit of tinkering. Fresh gears here, a new arm there, and they get a new lease on life. Time’s a gift everyone should get a little more of, I say.” - Ekko",
+    "artistName": "Kudos Productions",
+    "name": "Augmented Clockling",
+    "cardCode": "07PZ009",
+    "keywords": [
+      "Elusive"
+    ],
+    "keywordRefs": [
+      "Elusive"
+    ],
+    "spellSpeed": "",
+    "spellSpeedRef": "",
+    "rarity": "EPIC",
+    "rarityRef": "Epic",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Unit",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07SH018.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07SH018-full.png"
+      }
+    ],
+    "regions": [
+      "Shurima"
+    ],
+    "regionRefs": [
+      "Shurima"
+    ],
+    "attack": 2,
+    "cost": 3,
+    "health": 4,
+    "description": "When I'm summoned, create at the bottom of your deck two random level 2 champions that aren't in your hand, deck, or play.",
+    "descriptionRaw": "When I'm summoned, create at the bottom of your deck two random level 2 champions that aren't in your hand, deck, or play.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "He knew not fully what he saw, what shape the calamity might take, or when--but he knows this world and its people. They are not ready. They may never be.",
+    "artistName": "Envar Studio",
+    "name": "Secret Keeper",
+    "cardCode": "07SH018",
+    "keywords": [],
+    "keywordRefs": [],
+    "spellSpeed": "",
+    "spellSpeedRef": "",
+    "rarity": "EPIC",
+    "rarityRef": "Epic",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Unit",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07SH023.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07SH023-full.png"
+      }
+    ],
+    "regions": [
+      "Shurima"
+    ],
+    "regionRefs": [
+      "Shurima"
+    ],
+    "attack": 0,
+    "cost": 7,
+    "health": 7,
+    "description": "I have +1|+0 for each <link=keyword.Ephemeral><sprite name=Ephemeral><style=Keyword>Ephemeral</style></link> ally you've summoned this game. <style=Variable></style>",
+    "descriptionRaw": "I have +1|+0 for each Ephemeral ally you've summoned this game. ",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "“Though you may be naught but grains of sand to this foe, I see you. I feel your presence in the dunes. Lend your strength to me, and we shall bring our enemies low together!”",
+    "artistName": "Kudos Productions",
+    "name": "Fallen Sands General",
+    "cardCode": "07SH023",
+    "keywords": [
+      "Overwhelm"
+    ],
+    "keywordRefs": [
+      "Overwhelm"
+    ],
+    "spellSpeed": "",
+    "spellSpeedRef": "",
+    "rarity": "RARE",
+    "rarityRef": "Rare",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Unit",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC005.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC005-full.png"
+      }
+    ],
+    "regions": [
+      "Bandle City"
+    ],
+    "regionRefs": [
+      "BandleCity"
+    ],
+    "attack": 1,
+    "cost": 2,
+    "health": 3,
+    "description": "",
+    "descriptionRaw": "",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "\"Well, that's new.\" - Fae Bladetwirler",
+    "artistName": "Bubble Cat",
+    "name": "Carved Bladetwirler",
+    "cardCode": "07BC005",
+    "keywords": [
+      "Quick Attack",
+      "Augment"
+    ],
+    "keywordRefs": [
+      "QuickStrike",
+      "Augment"
+    ],
+    "spellSpeed": "",
+    "spellSpeedRef": "",
+    "rarity": "COMMON",
+    "rarityRef": "Common",
+    "subtypes": [
+      "FAE"
+    ],
+    "supertype": "",
+    "type": "Unit",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard",
+      "Commons Only"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name",
+      "client_Formats_CommonsOnly_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [
+      "07BC009T1"
+    ],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC009.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC009-full.png"
+      }
+    ],
+    "regions": [
+      "Bandle City"
+    ],
+    "regionRefs": [
+      "BandleCity"
+    ],
+    "attack": 0,
+    "cost": 1,
+    "health": 0,
+    "description": "Deal 1 to a unit. Create a <link=card.create><style=AssociatedCard>Perilous Pastry</style></link> in hand.",
+    "descriptionRaw": "Deal 1 to a unit. Create a Perilous Pastry in hand.",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "Brace yourself.",
+    "artistName": "Kudos Productions",
+    "name": "Pie Toss",
+    "cardCode": "07BC009",
+    "keywords": [
+      "Fast"
+    ],
+    "keywordRefs": [
+      "Fast"
+    ],
+    "spellSpeed": "Fast",
+    "spellSpeedRef": "Fast",
+    "rarity": "RARE",
+    "rarityRef": "Rare",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Spell",
+    "collectible": true,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard",
+      "Commons Only"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name",
+      "client_Formats_CommonsOnly_name"
+    ]
+  },
+  {
+    "associatedCards": [],
+    "associatedCardRefs": [],
+    "assets": [
+      {
+        "gameAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC009T1.png",
+        "fullAbsolutePath": "http://dd.b.pvp.net/4_3_0/set7/en_us/img/cards/07BC009T1-full.png"
+      }
+    ],
+    "regions": [
+      "Bandle City"
+    ],
+    "regionRefs": [
+      "BandleCity"
+    ],
+    "attack": 0,
+    "cost": 2,
+    "health": 0,
+    "description": "Deal 1 to anything. ",
+    "descriptionRaw": "Deal 1 to anything. ",
+    "levelupDescription": "",
+    "levelupDescriptionRaw": "",
+    "flavorText": "It tastes better than it feels.",
+    "artistName": "Kudos Productions",
+    "name": "Perilous Pastry",
+    "cardCode": "07BC009T1",
+    "keywords": [
+      "Slow"
+    ],
+    "keywordRefs": [
+      "Slow"
+    ],
+    "spellSpeed": "Slow",
+    "spellSpeedRef": "Slow",
+    "rarity": "None",
+    "rarityRef": "None",
+    "subtypes": [],
+    "supertype": "",
+    "type": "Spell",
+    "collectible": false,
+    "set": "Set7",
+    "formats": [
+      "Eternal",
+      "Standard"
+    ],
+    "formatRefs": [
+      "client_Formats_Eternal_name",
+      "client_Formats_Standard_name"
+    ]
   }
 ]
