@@ -3,6 +3,8 @@ package discord
 import (
 	"errors"
 	"fmt"
+	"log"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 )
@@ -13,6 +15,7 @@ type Session struct {
 }
 
 func StartSession(token string) (*Session, error) {
+
 	discordSession, err := discordgo.New("Bot " + token)
 	if err != nil {
 		return nil, err
@@ -29,7 +32,19 @@ func StartSession(token string) (*Session, error) {
 		session: discordSession,
 	}
 
-	session.session.UpdateWatchStatus(0, fmt.Sprintf("%d servers", len(discordSession.State.Guilds)))
+	go func() {
+		err := session.updateStatus()
+		if err != nil {
+			log.Println(err)
+		}
+		for range time.Tick(1 * time.Hour) {
+			err := session.updateStatus()
+			if err != nil {
+				log.Println(err)
+			}
+		}
+	}()
+
 	discordSession.AddHandler(session.HandleInteraction)
 
 	return session, nil
@@ -40,7 +55,12 @@ func (s *Session) Close() error {
 }
 
 func (s *Session) AddComand(command *Command) {
-	command.Register(s.session)
+	err := command.Register(s.session)
+
+	if err != nil {
+		log.Println(err)
+	}
+
 	if s.commands == nil {
 		s.commands = map[string]*Command{}
 	}
@@ -83,4 +103,8 @@ func errorResponse(s *discordgo.Session, i *discordgo.InteractionCreate, err err
 			}},
 		},
 	})
+}
+
+func (s *Session) updateStatus() error {
+	return s.session.UpdateWatchStatus(0, fmt.Sprintf("%d servers", len(s.session.State.Guilds)))
 }
