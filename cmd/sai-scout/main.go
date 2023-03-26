@@ -44,6 +44,8 @@ func main() {
 
 	s.AddComand(commands.DeckCommand(dec))
 	s.AddComand(commands.InfoCommand(db))
+	s.AddComand(commands.InviteCommand)
+	s.AddComand(commands.HelpCommand)
 	err = s.CleanCommands()
 	if err != nil {
 		log.Println("Error while remove old commands", err)
