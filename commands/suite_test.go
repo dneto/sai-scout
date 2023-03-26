@@ -15,17 +15,18 @@ func TestBooks(t *testing.T) {
 
 var (
 	annie = database.Card{
-		CardCode:           "ANNIE",
-		AssociatedCardRefs: []string{"ANNIELVL2"},
-		Name:               "Annie",
-		Cost:               1,
-		RarityRef:          "Champion",
-		RegionRefs:         []string{"Noxus"},
-		Type:               "Unit",
-		Attack:             0,
-		Health:             2,
-		DescriptionRaw:     "desc annie",
-		FlavorText:         "flavor annie",
+		CardCode:              "ANNIE",
+		AssociatedCardRefs:    []string{"ANNIELVL2"},
+		Name:                  "Annie",
+		Cost:                  1,
+		RarityRef:             "Champion",
+		RegionRefs:            []string{"Noxus"},
+		Type:                  "Unit",
+		Attack:                0,
+		Health:                2,
+		DescriptionRaw:        "desc annie",
+		FlavorText:            "flavor annie",
+		LevelupDescriptionRaw: "lvl up desc",
 		Assets: []struct {
 			GameAbsolutePath string "json:\"gameAbsolutePath\""
 			FullAbsolutePath string "json:\"fullAbsolutePath\""

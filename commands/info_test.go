@@ -30,6 +30,45 @@ var _ = Describe("InfoCommand", func() {
 		})
 	})
 
+	Context("autocomplete", func() {
+		var (
+			resp *discordgo.InteractionResponse
+		)
+		BeforeEach(func() {
+			db := fakeDB{}
+
+			db.fakeSearchByName = func(name string) []database.Card {
+				return []database.Card{annie, annieLvl2}
+			}
+
+			interaction := &discordgo.InteractionCreate{
+				Interaction: &discordgo.Interaction{
+					Type: discordgo.InteractionApplicationCommandAutocomplete,
+					Data: discordgo.ApplicationCommandInteractionData{
+						Options: []*discordgo.ApplicationCommandInteractionDataOption{
+							{
+								Type:  discordgo.ApplicationCommandOptionString,
+								Value: "Annie",
+							},
+						},
+					},
+				},
+			}
+			resp = infoAutocompleteHandler(db, interaction)
+		})
+
+		It("should show embeds for all levels of the champion", func() {
+			Expect(resp).To(Equal(&discordgo.InteractionResponse{
+				Type: discordgo.InteractionApplicationCommandAutocompleteResult,
+				Data: &discordgo.InteractionResponseData{
+					Choices: []*discordgo.ApplicationCommandOptionChoice{
+						{Name: "Annie", Value: "ANNIE"},
+					},
+				},
+			}))
+		})
+	})
+
 	Context("handler", func() {
 		var (
 			resp *discordgo.InteractionResponse
@@ -38,11 +77,6 @@ var _ = Describe("InfoCommand", func() {
 		Context("champion card", func() {
 			BeforeEach(func() {
 				db := fakeDB{}
-
-				db.fakeSearchByName = func(name string) []database.Card {
-					return []database.Card{annie}
-				}
-
 				db.fakeCardByCode = func(cardCode string) (database.Card, error) {
 					switch cardCode {
 					case "ANNIE":
@@ -93,6 +127,7 @@ var _ = Describe("InfoCommand", func() {
 									{Name: "Health", Value: "2", Inline: true},
 									{Name: "Rarity", Value: "Champion", Inline: true},
 									{Name: "Description", Value: "desc annie", Inline: false},
+									{Name: "Level Up", Value: "lvl up desc", Inline: false},
 									{
 										Name:   "",
 										Value:  "> _flavor annie_",
@@ -130,11 +165,6 @@ var _ = Describe("InfoCommand", func() {
 		Context("spell card", func() {
 			BeforeEach(func() {
 				db := fakeDB{}
-
-				db.fakeSearchByName = func(name string) []database.Card {
-					return []database.Card{annie}
-				}
-
 				db.fakeCardByCode = func(cardCode string) (database.Card, error) {
 					return bladesEdge, nil
 				}
@@ -194,11 +224,6 @@ var _ = Describe("InfoCommand", func() {
 		Context("unit card", func() {
 			BeforeEach(func() {
 				db := fakeDB{}
-
-				db.fakeSearchByName = func(name string) []database.Card {
-					return []database.Card{annie}
-				}
-
 				db.fakeCardByCode = func(cardCode string) (database.Card, error) {
 					return crimsonPigeon, nil
 				}
