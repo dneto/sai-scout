@@ -27,7 +27,7 @@ func (d Deck) Champions() []DeckEntry {
 
 func (d Deck) Followers() []DeckEntry {
 	return d.Filter(func(de DeckEntry, _ int) bool {
-		return de.Card.Type == "Unit" && de.Card.Rarity != "Champion"
+		return de.Card.Type == "Unit" && de.Card.RarityRef != "Champion"
 	})
 }
 

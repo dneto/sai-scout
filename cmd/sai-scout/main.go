@@ -43,7 +43,11 @@ func main() {
 	dec := deck.NewDecoder(db)
 
 	s.AddComand(commands.DeckCommand(dec))
-	s.AddComand(commands.SearchCommand(db))
+	s.AddComand(commands.InfoCommand(db))
+	err = s.CleanCommands()
+	if err != nil {
+		log.Println("Error while remove old commands", err)
+	}
 
 	log.Print("Bot is now running.  Press CTRL-C to exit.")
 	sc := make(chan os.Signal, 1)

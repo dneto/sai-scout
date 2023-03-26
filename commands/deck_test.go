@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/dneto/sai-scout/database"
 	"github.com/dneto/sai-scout/deck"
 	"github.com/dneto/sai-scout/discord"
 	. "github.com/onsi/ginkgo/v2"
@@ -29,6 +28,7 @@ var _ = Describe("DeckCommand", func() {
 			Expect(command.ApplicationCommand.Options[0].Name).To(Equal("code"))
 		})
 	})
+
 	Context("handler", func() {
 		var (
 			resp *discordgo.InteractionResponse
@@ -249,11 +249,3 @@ func (f fakeDeckDecoder) Decode(cardCode string) (deck.Deck, error) {
 
 	return nil, errors.New("not implemented")
 }
-
-var (
-	annie                  = database.Card{Name: "Annie", Cost: 1, RarityRef: "Champion", RegionRefs: []string{"Noxus"}}
-	ravenbloomConservatory = database.Card{Name: "Ravenbloom Conservatory", Cost: 1, Type: "Landmark", RegionRefs: []string{"Noxus"}}
-	theDarkinBallista      = database.Card{Name: "The Darkin Ballista", Cost: 1, Type: "Equipment", RegionRefs: []string{"Noxus"}}
-	crimsonPigeon          = database.Card{Name: "Crimson Pigeon", Cost: 1, Type: "Unit", RegionRefs: []string{"Noxus"}}
-	bladesEdge             = database.Card{Name: "Blade's Edge", Cost: 1, Type: "Spell", RegionRefs: []string{"Noxus"}}
-)

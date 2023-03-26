@@ -67,6 +67,22 @@ func (s *Session) AddComand(command *Command) {
 	s.commands[command.Name] = command
 }
 
+func (s *Session) CleanCommands() error {
+	commands, err := s.session.ApplicationCommands(s.session.State.User.ID, "")
+
+	if err != nil {
+		return err
+	}
+
+	for _, c := range commands {
+		if _, ok := s.commands[c.Name]; !ok {
+			s.session.ApplicationCommandDelete(s.session.State.User.ID, "", c.ID)
+		}
+	}
+
+	return nil
+}
+
 func (s *Session) HandleInteraction(ss *discordgo.Session, i *discordgo.InteractionCreate) {
 	defer func() {
 		if r := recover(); r != nil {

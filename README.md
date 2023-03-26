@@ -1,8 +1,10 @@
 # Sai Scout
 
 [![Invite](https://img.shields.io/badge/Invite-7289da?logo=discord&logoColor=white&&style=for-the-badge)](https://discord.com/api/oauth2/authorize?client_id=1086224659231559680&permissions=0&scope=bot)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dneto/sai-scout/coverage.yml?style=for-the-badge)
-![Codecov](https://img.shields.io/codecov/c/github/dneto/sai-scout?style=for-the-badge)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/dneto/sai-scout/coverage.yml?style=for-the-badge&label=Tests&logo=github)
+![Codecov](https://img.shields.io/codecov/c/github/dneto/sai-scout?style=for-the-badge&logo=codecov&logoColor=white)
+
+
 
 ## Table of Contents
 
@@ -11,7 +13,7 @@
   - [Overview](#overview)
   - [Commands](#commands)
     - [`/deck`](#deck)
-    - [`/search` (BETA)](#search-beta)
+    - [`/info`](#info)
   - [Contributing](#contributing)
   - [Roadmap](#roadmap)
 
@@ -44,7 +46,7 @@ deck code as a title and the cards splitted by types into embed fields
 ![Example of /deck command output](screenshots/deckcommand.png)
 </details>
 
-### `/search` (BETA)
+### `/info`
 
 Shows details like region, cost, name, keywords, description, artist, card art, flavor...
 
@@ -55,7 +57,7 @@ Shows details like region, cost, name, keywords, description, artist, card art, 
 <details>
 <summary>Screenshot</summary>
 
-![Example of /deck command output](screenshots/searchcommand.png)
+![Example of /deck command output](screenshots/infocommand.png)
 </details>
 
 ## Contributing
