@@ -1,10 +1,12 @@
 package commands
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"sort"
 	"strings"
+	"text/template"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/dneto/sai-scout/database"
@@ -113,13 +115,13 @@ func infoCommandHandler(db Database) func(s *discordgo.Session, in *discordgo.In
 				fields = append(fields,
 					&discordgo.MessageEmbedField{Name: "", Value: strings.Join(flavorLines, "\n")})
 
-				regs := ""
-				for _, r := range cc.RegionRefs {
-					regs = regs + regions.Emote(r)
+				if len(cc.Formats) > 0 && cc.Collectible {
+					fields = append(fields,
+						&discordgo.MessageEmbedField{Name: "Formats", Value: strings.Join(cc.Formats, ", "), Inline: true})
 				}
 
 				embed := &discordgo.MessageEmbed{
-					Description: fmt.Sprintf("%s%s **%s**", regs, costEmoji[cc.Cost], cc.Name),
+					Description: applyCardTemplate(cc),
 					Image: &discordgo.MessageEmbedImage{
 						URL: cc.Assets[0].FullAbsolutePath,
 					},
@@ -177,4 +179,46 @@ func infoAutocompleteHandler(db Database, in *discordgo.InteractionCreate) *disc
 			Choices: ch,
 		},
 	}
+}
+
+var cardTemplate = "{{.regions}}{{.cost}}**{{.name}}**" +
+	// "\n---\n" +
+	// "**Type: **{{.type}}\n" +
+	// "{{if and (not (eq .rarity \"None\")) (not (eq .rarity \"\"))}}" +
+	// "**Rarity: **{{.rarity}}\n" +
+	// "{{end}}" +
+	// "{{if not (eq .keywords \"\")}}" +
+	// "**Keywords: **{{.keywords}}\n" +
+	// "{{end}}" +
+	// "{{if not (eq .statline \"\")}}" +
+	// "{{.statline}}\n---" +
+	// "{{end}}" +
+	""
+
+func applyCardTemplate(c database.Card) string {
+	tmpl, err := template.New("").Parse(cardTemplate)
+	if err != nil {
+		return ""
+	}
+
+	regs := ""
+	for _, r := range c.RegionRefs {
+		regs = regs + regions.Emote(r)
+	}
+	bbuf := bytes.NewBuffer([]byte{})
+	err = tmpl.Execute(bbuf, map[string]string{
+		"regions":  regs,
+		"cost":     costEmoji[c.Cost],
+		"name":     c.Name,
+		"type":     c.Type,
+		"rarity":   c.Rarity,
+		"keywords": strings.Join(c.Keywords, ", "),
+		"statline": fmt.Sprintf("%d/%d", c.Attack, c.Health),
+	})
+
+	if err != nil {
+		return ""
+	}
+
+	return bbuf.String()
 }

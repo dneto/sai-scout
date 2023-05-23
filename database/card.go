@@ -32,6 +32,8 @@ type Card struct {
 	Type                  string   `json:"type"`
 	Collectible           bool     `json:"collectible"`
 	Set                   string   `json:"set"`
+	Formats               []string `json:"formats"`
+	FormatRefs            []string `json:"formatRefs"`
 }
 
 type cards []Card
