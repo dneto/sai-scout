@@ -1,7 +1,8 @@
-package database
+package repository
 
-// Card represents the card structure present in LoR Data Dragon
 type Card struct {
+	CardCode string `json:"cardCode"`
+
 	AssociatedCards    []string `json:"associatedCards"`
 	AssociatedCardRefs []string `json:"associatedCardRefs"`
 	Assets             []struct {
@@ -20,7 +21,6 @@ type Card struct {
 	FlavorText            string   `json:"flavorText"`
 	ArtistName            string   `json:"artistName"`
 	Name                  string   `json:"name"`
-	CardCode              string   `json:"cardCode"`
 	Keywords              []string `json:"keywords"`
 	KeywordRefs           []string `json:"keywordRefs"`
 	SpellSpeed            string   `json:"spellSpeed"`
@@ -34,14 +34,7 @@ type Card struct {
 	Set                   string   `json:"set"`
 	Formats               []string `json:"formats"`
 	FormatRefs            []string `json:"formatRefs"`
-}
 
-type cards []Card
-
-func (cs cards) String(i int) string {
-	return cs[i].Name
-}
-
-func (cs cards) Len() int {
-	return len(cs)
+	TypeRef      string
+	SupertypeRef string
 }

@@ -2,7 +2,7 @@ package commands
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/dneto/sai-scout/discord"
+	"github.com/dneto/sai-scout/pkg/discord"
 )
 
 var HelpCommand = discord.NewCommand(
@@ -30,12 +30,12 @@ var HelpCommand = discord.NewCommand(
 	helpCommandHandler,
 )
 
-func helpCommandHandler(s *discordgo.Session, in *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
+func helpCommandHandler(s discord.Session, in *discordgo.InteractionCreate) error {
 	data := in.ApplicationCommandData()
 	options := data.Options
 	switch options[0].Name {
 	case "deck":
-		return &discordgo.InteractionResponse{
+		return s.InteractionRespond(in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Flags: discordgo.MessageFlagsEphemeral,
@@ -44,10 +44,10 @@ func helpCommandHandler(s *discordgo.Session, in *discordgo.InteractionCreate) (
 					"> _Options:_" + "\n" +
 					"> • `code`: Legends of Runeterra deck code. Example: CICACAIDFABAOBQ2DMCAEBQUCYWTUBIHAMAQMBYIBEBACBYGDEAQOAYDAA",
 			},
-		}, nil
+		})
 
 	case "info":
-		return &discordgo.InteractionResponse{
+		return s.InteractionRespond(in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Flags: discordgo.MessageFlagsEphemeral,
@@ -56,18 +56,18 @@ func helpCommandHandler(s *discordgo.Session, in *discordgo.InteractionCreate) (
 					"> _Options:_" + "\n" +
 					"> • `name`: The card name. As soon as you start typing, the field will filter and show cards name matching what you typed ",
 			},
-		}, nil
+		})
 
 	case "invite":
-		return &discordgo.InteractionResponse{
+		return s.InteractionRespond(in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Flags:   discordgo.MessageFlagsEphemeral,
 				Content: "> **/invite**: Send bot invite link",
 			},
-		}, nil
+		})
 
 	default:
-		return nil, nil
+		return nil
 	}
 }

@@ -23,8 +23,8 @@ Sai Scout is a Discord bot for showing deck cards in a visual way.
 
 [Invite Link](https://discord.com/api/oauth2/authorize?client_id=1086224659231559680&permissions=0&scope=bot)
 
-The story behind this name starts [G.G Lookout](https://github.com/CuriouserThing/GreengladeLookout), which is another
-bot that inspired this one.
+The story behind this name starts [G.G Lookout](https://github.com/CuriouserThing/GreengladeLookout)
+which is another bot that inspired this one.
 
 Green Glade Lookout uses a spyglass, so I thought it would be a good idea to
 name this bot as another card that uses a spyglass too.
@@ -38,7 +38,9 @@ deck code as a title and the cards splitted by types into embed fields
 
 **Options**
 
-- `code`: Deck code
+- **code**: Legends of Runeterra deck code
+- **(optional) language**: Language which the output must be showed. If this
+  option is not set, the output will be in english.
 
 <details>
 <summary>Screenshot</summary>
@@ -52,7 +54,9 @@ Shows details like region, cost, name, keywords, description, artist, card art, 
 
 **Options**
 
-- `name`: Card name (autocomplete).
+- **name**: Card name (autocomplete).
+- **(optional) language**: Language which the output must be showed. If this
+  option is not set, the output will be in english.
 
 <details>
 <summary>Screenshot</summary>

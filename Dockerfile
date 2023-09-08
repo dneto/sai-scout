@@ -1,4 +1,4 @@
-FROM golang:1.20-alpine AS build
+FROM golang:1.21 AS build
 
 RUN mkdir /go/src/sai-scout
 WORKDIR /go/src/sai-scout
@@ -7,9 +7,10 @@ COPY . .
 
 RUN go build -o /sai-scout ./cmd/sai-scout/main.go
 
-FROM alpine:latest
+FROM debian:bookworm-slim
 
-COPY --from=build /go/src/sai-scout/cards.json /cards.json
+RUN apt-get update && apt-get install -y ca-certificates && update-ca-certificates
+
 COPY --from=build /sai-scout /sai-scout
 
 ENTRYPOINT ["/sai-scout"]

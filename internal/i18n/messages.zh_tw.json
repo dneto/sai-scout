@@ -1,0 +1,15 @@
+{
+    "Champions": "英雄",
+    "Followers": "侍從單位",
+    "Spells": "法術",
+    "Landmarks": "地標",
+    "Equipments": "裝備",
+    "Type": "类型",
+    "Attack": "力量值",
+    "Health": "生命值",
+    "Keywords": "增益特性",
+    "Rarity": "稀有度",
+    "Description": "描述",
+    "Level Up": "升級",
+    "Formats": "格式"
+}

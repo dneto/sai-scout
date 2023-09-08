@@ -1,23 +1,27 @@
 package commands
 
 import (
+	"context"
 	"errors"
 
 	"github.com/bwmarrin/discordgo"
-	"github.com/dneto/sai-scout/deck"
-	"github.com/dneto/sai-scout/discord"
+	"github.com/dneto/sai-scout/internal/deck"
+	"github.com/dneto/sai-scout/internal/i18n"
+	"github.com/dneto/sai-scout/pkg/discord"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
+// TODO FIX
 var _ = Describe("DeckCommand", func() {
+	var localize localizeFunc = i18n.LoadTranslations().Localize
 	Context("DeckCommand", func() {
 		var (
-			command *discord.Command
+			command *discord.SlashCommand
 		)
 
 		BeforeEach(func() {
-			command = DeckCommand(nil)
+			command = Deck(nil, nil)
 		})
 
 		It("should have name 'deck'", func() {
@@ -31,14 +35,26 @@ var _ = Describe("DeckCommand", func() {
 
 	Context("handler", func() {
 		var (
-			resp *discordgo.InteractionResponse
-			err  error
+			err error
+
+			interactionResponse *discordgo.InteractionResponse
+			followUpResp        *discordgo.WebhookParams
+			session             discord.Session = fakeSession{
+				interactionRespond: func(i *discordgo.Interaction, ir *discordgo.InteractionResponse, opts ...discordgo.RequestOption) error {
+					interactionResponse = ir
+					return nil
+				},
+				followUpMessageCreate: func(i *discordgo.Interaction, waitResponse bool, params *discordgo.WebhookParams, opts ...discordgo.RequestOption) (*discordgo.Message, error) {
+					followUpResp = params
+					return nil, nil
+				},
+			}
 		)
 
 		Context("sucess", func() {
 			BeforeEach(func() {
-				decoder := fakeDeckDecoder{}
-				decoder.fakeDecode = func(deckCode string) (deck.Deck, error) {
+
+				decodeFunc := decodeFunc(func(ctx context.Context, language, code string) (deck.Deck, error) {
 					return deck.Deck{
 						deck.DeckEntry{Card: annie, Count: 1},
 						deck.DeckEntry{Card: ravenbloomConservatory, Count: 1},
@@ -46,10 +62,9 @@ var _ = Describe("DeckCommand", func() {
 						deck.DeckEntry{Card: theDarkinBallista, Count: 1},
 						deck.DeckEntry{Card: bladesEdge, Count: 1},
 					}, nil
-				}
+				})
 
-				h := deckCommandHandler(decoder)
-				session := &discordgo.Session{}
+				h := deckCommandHandler(decodeFunc, localize)
 				interaction := &discordgo.InteractionCreate{
 					Interaction: &discordgo.Interaction{
 						Type: discordgo.InteractionApplicationCommand,
@@ -60,7 +75,7 @@ var _ = Describe("DeckCommand", func() {
 						},
 					},
 				}
-				resp, err = h(session, interaction)
+				err = h(session, interaction)
 
 			})
 
@@ -68,16 +83,27 @@ var _ = Describe("DeckCommand", func() {
 				Expect(err).ToNot(HaveOccurred())
 			})
 
+			It("should send deferred message", func() {
+				Expect(interactionResponse).To(Equal(&discordgo.InteractionResponse{
+					Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
+					Data: &discordgo.InteractionResponseData{
+						Embeds: []*discordgo.MessageEmbed{
+							{Title: "**Processing**"},
+						},
+					},
+				}))
+			})
+
 			It("should have a embed", func() {
-				Expect(resp.Data.Embeds).ToNot(BeEmpty())
+				Expect(followUpResp.Embeds).ToNot(BeEmpty())
 			})
 
 			It("embed title is the deck code", func() {
-				Expect(resp.Data.Embeds[0].Title).To(Equal("DECKCODE"))
+				Expect(followUpResp.Embeds[0].Title).To(Equal("DECKCODE"))
 			})
 
 			It("should have a embed field for each card type", func() {
-				Expect(resp.Data.Embeds[0].Fields).To(Equal(
+				Expect(followUpResp.Embeds[0].Fields).To(Equal(
 					[]*discordgo.MessageEmbedField{
 						{
 							Name:   "Champions",
@@ -109,7 +135,7 @@ var _ = Describe("DeckCommand", func() {
 			})
 
 			It("should have Runeterra AR button", func() {
-				Expect(resp.Data.Components[0]).To(Equal(
+				Expect(followUpResp.Components[0]).To(Equal(
 					discordgo.ActionsRow{
 						Components: []discordgo.MessageComponent{
 							discordgo.Button{
@@ -125,8 +151,7 @@ var _ = Describe("DeckCommand", func() {
 
 		Context("contains more than 10 cards of a type", func() {
 			BeforeEach(func() {
-				decoder := fakeDeckDecoder{}
-				decoder.fakeDecode = func(deckCode string) (deck.Deck, error) {
+				decodeFunc := decodeFunc(func(_ context.Context, language, code string) (deck.Deck, error) {
 					return deck.Deck{
 						deck.DeckEntry{Card: annie, Count: 1},
 						deck.DeckEntry{Card: annie, Count: 1},
@@ -140,10 +165,9 @@ var _ = Describe("DeckCommand", func() {
 						deck.DeckEntry{Card: annie, Count: 1},
 						deck.DeckEntry{Card: annie, Count: 1},
 					}, nil
-				}
+				})
 
-				h := deckCommandHandler(decoder)
-				session := &discordgo.Session{}
+				h := deckCommandHandler(decodeFunc, localize)
 				interaction := &discordgo.InteractionCreate{
 					Interaction: &discordgo.Interaction{
 						Type: discordgo.InteractionApplicationCommand,
@@ -154,11 +178,11 @@ var _ = Describe("DeckCommand", func() {
 						},
 					},
 				}
-				resp, err = h(session, interaction)
+				err = h(session, interaction)
 			})
 
 			It("should have a embed field for each card type", func() {
-				Expect(resp.Data.Embeds[0].Fields).To(Equal(
+				Expect(followUpResp.Embeds[0].Fields).To(Equal(
 					[]*discordgo.MessageEmbedField{
 						{
 							Name:   "Champions",
@@ -176,17 +200,12 @@ var _ = Describe("DeckCommand", func() {
 		})
 
 		Context("fields without cards are not showed", func() {
-
 			BeforeEach(func() {
-				decoder := fakeDeckDecoder{}
-				decoder.fakeDecode = func(deckCode string) (deck.Deck, error) {
-					return deck.Deck{
-						deck.DeckEntry{Card: annie, Count: 1},
-					}, nil
-				}
+				decodeFunc := decodeFunc(func(_ context.Context, language, code string) (deck.Deck, error) {
+					return deck.Deck{deck.DeckEntry{Card: annie, Count: 1}}, nil
+				})
 
-				h := deckCommandHandler(decoder)
-				session := &discordgo.Session{}
+				h := deckCommandHandler(decodeFunc, localize)
 				interaction := &discordgo.InteractionCreate{
 					Interaction: &discordgo.Interaction{
 						Type: discordgo.InteractionApplicationCommand,
@@ -197,27 +216,25 @@ var _ = Describe("DeckCommand", func() {
 						},
 					},
 				}
-				resp, err = h(session, interaction)
+				err = h(session, interaction)
 			})
 
 			It("should have only one field", func() {
-				Expect(resp.Data.Embeds[0].Fields).To(HaveLen(1))
+				Expect(followUpResp.Embeds[0].Fields).To(HaveLen(1))
 			})
 
 			It("field should be champion field", func() {
-				Expect(resp.Data.Embeds[0].Fields[0].Name).To(Equal("Champions"))
+				Expect(followUpResp.Embeds[0].Fields[0].Name).To(Equal("Champions"))
 			})
 		})
 
 		Context("invalid deck code", func() {
 			BeforeEach(func() {
-				decoder := fakeDeckDecoder{}
-				decoder.fakeDecode = func(deckCode string) (deck.Deck, error) {
+				decodeFunc := decodeFunc(func(_ context.Context, language, code string) (deck.Deck, error) {
 					return nil, errors.New("error while decoding")
-				}
+				})
 
-				h := deckCommandHandler(decoder)
-				session := &discordgo.Session{}
+				h := deckCommandHandler(decodeFunc, localize)
 				interaction := &discordgo.InteractionCreate{
 					Interaction: &discordgo.Interaction{
 						Type: discordgo.InteractionApplicationCommand,
@@ -228,24 +245,17 @@ var _ = Describe("DeckCommand", func() {
 						},
 					},
 				}
-				resp, err = h(session, interaction)
+				err = h(session, interaction)
 			})
 
 			It("returns invalid deck code error", func() {
-				Expect(err).To(MatchError("invalid code"))
+				Expect(followUpResp).To(Equal(&discordgo.WebhookParams{
+					Flags: discordgo.MessageFlagsEphemeral,
+					Embeds: []*discordgo.MessageEmbed{
+						{Description: ":x: **invalid code**"},
+					},
+				}))
 			})
 		})
 	})
 })
-
-type fakeDeckDecoder struct {
-	fakeDecode func(deckCode string) (deck.Deck, error)
-}
-
-func (f fakeDeckDecoder) Decode(cardCode string) (deck.Deck, error) {
-	if f.fakeDecode != nil {
-		return f.fakeDecode(cardCode)
-	}
-
-	return nil, errors.New("not implemented")
-}

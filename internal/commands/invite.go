@@ -2,7 +2,7 @@ package commands
 
 import (
 	"github.com/bwmarrin/discordgo"
-	"github.com/dneto/sai-scout/discord"
+	"github.com/dneto/sai-scout/pkg/discord"
 )
 
 var InviteCommand = discord.NewCommand(
@@ -13,8 +13,8 @@ var InviteCommand = discord.NewCommand(
 	inviteCommandHandler,
 )
 
-func inviteCommandHandler(s *discordgo.Session, in *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error) {
-	return &discordgo.InteractionResponse{
+func inviteCommandHandler(s discord.Session, in *discordgo.InteractionCreate) error {
+	return s.InteractionRespond(in.Interaction, &discordgo.InteractionResponse{
 		Type: discordgo.InteractionResponseChannelMessageWithSource,
 		Data: &discordgo.InteractionResponseData{
 			Flags: discordgo.MessageFlagsEphemeral,
@@ -30,5 +30,5 @@ func inviteCommandHandler(s *discordgo.Session, in *discordgo.InteractionCreate)
 				},
 			},
 		},
-	}, nil
+	})
 }
