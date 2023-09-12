@@ -19,7 +19,7 @@
 
 ## Overview
 
-Sai Scout is a Discord bot for showing deck cards in a visual way.
+Sai Scout is a Discord bot for showing [**Legends of Runeterra**](https://playruneterra.com/) decks in a visual way.
 
 [Invite Link](https://discord.com/api/oauth2/authorize?client_id=1086224659231559680&permissions=0&scope=bot)
 
