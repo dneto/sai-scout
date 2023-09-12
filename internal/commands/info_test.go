@@ -12,7 +12,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// TODO FIX
 var _ = Describe("InfoCommand", func() {
 	var localize localizeFunc = i18n.LoadTranslations().Localize
 	var localizeBuildF localizeBuildFunc = localizeBuildFunc(func(language string) func(string) string {

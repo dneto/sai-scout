@@ -12,7 +12,6 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// TODO FIX
 var _ = Describe("DeckCommand", func() {
 	var localize localizeFunc = i18n.LoadTranslations().Localize
 	Context("DeckCommand", func() {
