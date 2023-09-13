@@ -41,7 +41,7 @@ var _ = Describe("Decks", func() {
 					return cards, nil
 				}
 				deckCode := "CEAAAAICAYBQYHA"
-				target, err = deck.BuildDecode(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
+				target, err = deck.BuildLoadDeckInfo(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
 
 			})
 
@@ -63,7 +63,7 @@ var _ = Describe("Decks", func() {
 					return nil, errors.New("fatal error")
 				}
 				deckCode := "CEAAAAICAYBQYHA"
-				target, err = deck.BuildDecode(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
+				target, err = deck.BuildLoadDeckInfo(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
 
 			})
 
@@ -82,7 +82,7 @@ var _ = Describe("Decks", func() {
 					return nil, errors.New("fatal error")
 				}
 				deckCode := ""
-				target, err = deck.BuildDecode(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
+				target, err = deck.BuildLoadDeckInfo(findByCodeFunc)(ctx, string(i18n.Default), deckCode)
 
 			})
 

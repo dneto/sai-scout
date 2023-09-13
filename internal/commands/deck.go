@@ -2,7 +2,6 @@ package commands
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -13,15 +12,18 @@ import (
 	"github.com/dneto/sai-scout/internal/regions"
 	"github.com/dneto/sai-scout/internal/repository"
 	"github.com/dneto/sai-scout/pkg/discord"
+	"github.com/dneto/sai-scout/pkg/discord/option"
+	"github.com/rs/zerolog/log"
 	"github.com/samber/lo"
 	"golang.org/x/text/width"
 )
 
-type DeckDecoder interface {
-	Decode(i18n.Locale, string) (deck.Deck, error)
-}
-
-var Deck = func(decoder decodeFunc, localize localizeFunc) *discord.SlashCommand {
+func Deck(
+	decoder decodeFunc,
+	localize localizeFunc,
+	findLang getLangFunc,
+	getTemplate getTemplateFunc,
+) *discord.SlashCommand {
 	return discord.NewCommand(
 		&discordgo.ApplicationCommand{
 			Name:        "deck",
@@ -42,7 +44,7 @@ var Deck = func(decoder decodeFunc, localize localizeFunc) *discord.SlashCommand
 				},
 			},
 		},
-		deckCommandHandler(decoder, localize),
+		deckCommandHandler(decoder, localize, findLang, getTemplate),
 	)
 }
 
@@ -57,7 +59,12 @@ func i18nToOptions() []*discordgo.ApplicationCommandOptionChoice {
 	return opts
 }
 
-func deckCommandHandler(decode decodeFunc, localize localizeFunc) func(s discord.Session, i *discordgo.InteractionCreate) error {
+func deckCommandHandler(
+	decode decodeFunc,
+	localize localizeFunc,
+	findLang getLangFunc,
+	getTemplate getTemplateFunc,
+) func(s discord.Session, i *discordgo.InteractionCreate) error {
 	return func(s discord.Session, i *discordgo.InteractionCreate) error {
 		s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
@@ -73,16 +80,17 @@ func deckCommandHandler(decode decodeFunc, localize localizeFunc) func(s discord
 		i.ApplicationCommandData()
 		options := i.ApplicationCommandData().Options
 		deckCode := options[0].Value.(string)
-		language := string(i18n.Default)
-		if len(options) > 1 {
-			language = options[1].StringValue()
+		defaultLang, _ := findLang(context.Background(), i.GuildID)
+		if defaultLang == "" {
+			defaultLang = string(i18n.Default)
 		}
+		language := option.GetOrElse(options, "language", defaultLang)
 
 		decodedDeck, err := decode(context.Background(), language, deckCode)
 
 		if err != nil {
-			fmt.Println(err)
-			return discord.ErrorResponse(s, i, errors.New("invalid code"))
+			log.Err(err).Str("code", deckCode).Str("language", language).Msg("failed to decode deck")
+			return discord.ErrorResponse(s, i, fmt.Errorf("**%s** is a invalid code", deckCode))
 		}
 
 		filter := func(d deck.Deck, predicate func(c *repository.Card) bool) []deck.DeckEntry {
@@ -139,7 +147,7 @@ func deckCommandHandler(decode decodeFunc, localize localizeFunc) func(s discord
 		if i.Interaction.Member != nil {
 			name := i.Interaction.Member.Nick
 			if name == "" {
-				name = i.Interaction.Member.User.Username
+				name = i.Interaction.Member.User.GlobalName
 			}
 
 			icon := avatarURL(i)
@@ -148,21 +156,32 @@ func deckCommandHandler(decode decodeFunc, localize localizeFunc) func(s discord
 				IconURL: icon,
 			}
 		}
-
-		s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
+		template, label, _ := getTemplate(context.Background(), i.GuildID)
+		if template == "" {
+			template = "https://runeterra.ar/lor/decks/code/{{code}}"
+		}
+		if label == "" {
+			label = "Runeterra AR"
+		}
+		url := strings.Replace(template, "{{code}}", deckCode, 1)
+		_, err = s.FollowupMessageCreate(i.Interaction, true, &discordgo.WebhookParams{
 			Embeds: embeds,
 			Components: []discordgo.MessageComponent{
 				discordgo.ActionsRow{
 					Components: []discordgo.MessageComponent{
 						discordgo.Button{
 							Style: discordgo.LinkButton,
-							Label: "View on Runeterra AR",
-							URL:   "https://runeterra.ar/decks/code/" + deckCode,
+							Label: fmt.Sprintf("View on %s", label),
+							URL:   url,
 						},
 					},
 				},
 			},
 		})
+
+		if err != nil {
+			log.Error().Err(err).Msg("failed to send deck followup message")
+		}
 
 		return err
 	}

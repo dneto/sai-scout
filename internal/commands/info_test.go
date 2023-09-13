@@ -77,7 +77,7 @@ var _ = Describe("InfoCommand", func() {
 
 	Context("handler", func() {
 		var (
-			handler             discord.Handler
+			handler             discord.HandlerFunc
 			interactionResponse *discordgo.InteractionResponse
 			followUpResp        *discordgo.WebhookParams
 			err                 error

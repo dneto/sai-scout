@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.0
 
 require (
-	github.com/bwmarrin/discordgo v0.27.1
+	github.com/bwmarrin/discordgo v0.27.2-0.20230907125633-a2079d3138d2
 	github.com/caarlos0/env/v9 v9.0.0
 	github.com/dneto/lor-deckcode-go v0.6.2
 	github.com/nicksnyder/go-i18n/v2 v2.2.1
@@ -16,7 +16,7 @@ require (
 	github.com/samber/mo v1.8.0
 	github.com/sourcegraph/conc v0.3.0
 	go.mongodb.org/mongo-driver v1.12.1
-	golang.org/x/text v0.8.0
+	golang.org/x/text v0.13.0
 )
 
 require (
@@ -29,6 +29,7 @@ require (
 	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
+	github.com/m0t0k1ch1/lor-deckcode-go v0.7.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe // indirect
@@ -41,9 +42,9 @@ require (
 	github.com/youmark/pkcs8 v0.0.0-20181117223130-1be2e3e5546d // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/crypto v0.6.0 // indirect
+	golang.org/x/crypto v0.13.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	golang.org/x/net v0.8.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/sync v0.2.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect

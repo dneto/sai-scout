@@ -4,12 +4,13 @@ import (
 	"cmp"
 	"context"
 	"fmt"
-	"slices"
 
-	lordeckcode "github.com/dneto/lor-deckcode-go"
+	"github.com/dneto/sai-scout/internal/card"
 	"github.com/dneto/sai-scout/internal/repository"
+	"github.com/dneto/sai-scout/pkg/maps"
+	"github.com/dneto/sai-scout/pkg/slices"
+	lordeckcode "github.com/m0t0k1ch1/lor-deckcode-go"
 	"github.com/samber/lo"
-	"github.com/samber/mo"
 )
 
 type DeckEntry struct {
@@ -19,62 +20,65 @@ type DeckEntry struct {
 
 type Deck []DeckEntry
 
-type findByCodesFunc func(ctx context.Context, language string, codes ...string) ([]*repository.Card, error)
+type loadCardsInfoByCodeFunc func(ctx context.Context, language string, codes ...string) ([]*repository.Card, error)
 
-func BuildDecode(findByCodes findByCodesFunc) func(context.Context, string, string) (Deck, error) {
+func BuildLoadDeckInfo(loadCardsInfo loadCardsInfoByCodeFunc) func(context.Context, string, string) (Deck, error) {
 	return func(ctx context.Context, language string, code string) (Deck, error) {
-		return mo.TupleToResult(decode(code)).
-			Map(populate(ctx, language, findByCodes)).Get()
+		deck, err := decode(code)
+		if err != nil {
+			return nil, err
+		}
+
+		cardsInfo, err := loadCardsInfo(ctx, language, codesFromDeck(deck)...)
+		if err != nil {
+			return nil, fmt.Errorf("failed to find cards: %w", err)
+		}
+
+		cardsByCode := maps.MapBy(cardsInfo, card.CardCode)
+
+		deckWithInfo := Deck{}
+		for _, de := range deck {
+			if c, found := cardsByCode[de.Card.CardCode]; found {
+				deckWithInfo = append(deckWithInfo, DeckEntry{
+					Card:  c,
+					Count: de.Count,
+				})
+			}
+		}
+
+		return slices.Sort(deckWithInfo, compareByCostAndName), nil
 	}
 }
 
 func decode(code string) (Deck, error) {
-	toDeck := func(ccc lordeckcode.CardCodeAndCount, _ int) DeckEntry {
-		return DeckEntry{Count: ccc.Count, Card: &repository.Card{CardCode: ccc.CardCode}}
-	}
-
 	deck, err := lordeckcode.Decode(code)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode deck: %w", err)
 	}
 
-	return lo.Map(deck, toDeck), nil
+	return fromLorDeckCode(deck), nil
 }
 
-func populate(ctx context.Context, locale string, findByCodes findByCodesFunc) func(Deck) (Deck, error) {
-	return func(d Deck) (Deck, error) {
-		codes := lo.Map(d, func(de DeckEntry, _ int) string {
-			return de.Card.CardCode
-		})
-
-		cards, err := findByCodes(ctx, locale, codes...)
-		if err != nil {
-			return nil, fmt.Errorf("failed to find cards: %w", err)
-		}
-
-		loadCard := func(de DeckEntry, _ int) DeckEntry {
-			for _, c := range cards {
-				if c.CardCode == de.Card.CardCode {
-					return DeckEntry{
-						Card:  c,
-						Count: de.Count,
-					}
-				}
-			}
-			return DeckEntry{}
-		}
-
-		dd := lo.Map(d, loadCard)
-		slices.SortFunc(dd, compareDeckEntry)
-		return dd, nil
-	}
+func codesFromDeck(deck Deck) []string {
+	return lo.Map(deck, func(de DeckEntry, _ int) string {
+		return de.Card.CardCode
+	})
 }
 
-func compareDeckEntry(de DeckEntry, ee DeckEntry) int {
+func compareByCostAndName(de DeckEntry, ee DeckEntry) int {
 	c := cmp.Compare(de.Card.Cost, ee.Card.Cost)
 	if c != 0 {
 		return c
 	}
 
 	return cmp.Compare(de.Card.Name, ee.Card.Name)
+}
+
+func fromLorDeckCode(deck lordeckcode.Deck) Deck {
+	d := make(Deck, len(deck))
+	for i, ccc := range deck {
+		d[i] = DeckEntry{Count: ccc.Count, Card: &repository.Card{CardCode: ccc.CardCode}}
+	}
+
+	return d
 }

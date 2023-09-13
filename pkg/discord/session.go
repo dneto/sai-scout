@@ -3,6 +3,7 @@ package discord
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/rs/zerolog/log"
@@ -108,11 +109,24 @@ func HandleInteractionCreate(commands map[string]*SlashCommand) func(*discordgo.
 				ErrorResponse(ss, ic, errors.New("Unknown error"))
 			}
 		}()
-		if c, ok := commands[ic.ApplicationCommandData().Name]; ok {
-			err := c.handle(ss, ic)
+		switch ic.Type {
+		case discordgo.InteractionApplicationCommand:
+			if c, ok := commands[ic.ApplicationCommandData().Name]; ok {
+				err := c.handle(ss, ic)
 
-			if err != nil {
-				log.Error().Err(err).Msg("Failed do respond interaction")
+				if err != nil {
+					log.Error().Err(err).Msg("Failed do respond interaction")
+				}
+			}
+		case discordgo.InteractionMessageComponent:
+			customID := ic.MessageComponentData().CustomID
+			split := strings.Split(customID, ";")
+			if c, ok := commands[split[0]]; ok {
+				err := c.handle(ss, ic)
+
+				if err != nil {
+					log.Error().Err(err).Msg("Failed do respond interaction")
+				}
 			}
 		}
 	}
@@ -120,11 +134,14 @@ func HandleInteractionCreate(commands map[string]*SlashCommand) func(*discordgo.
 
 func ErrorResponse(s Session, i *discordgo.InteractionCreate, err error) error {
 	log.Error().Err(err).Msg("Failed do respond interaction")
+
 	_, err = s.FollowupMessageCreate(i.Interaction, false, &discordgo.WebhookParams{
-		Flags: discordgo.MessageFlagsEphemeral,
-		Embeds: []*discordgo.MessageEmbed{{
-			Description: fmt.Sprintf(":x: **%s**", err.Error()),
-		}},
+		Content: "### <:poroshock:1151475832494247947> **Error**",
+		Embeds: []*discordgo.MessageEmbed{
+			{
+				Description: err.Error(),
+			},
+		},
 	})
 	return err
 }

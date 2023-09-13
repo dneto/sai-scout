@@ -42,24 +42,29 @@ var infoCommand = &discordgo.ApplicationCommand{
 	},
 }
 
-var Info = func(findByCodes findByCodesFunc, matchName matchNameFunc, localize localizeFunc) *discord.SlashCommand {
+var Info = func(
+	findByCodes findByCodesFunc,
+	matchName matchNameFunc,
+	localize localizeFunc,
+	findLang getLangFunc) *discord.SlashCommand {
 	lfunc := func(l string) func(string) string {
 		return func(s string) string {
 			return localize(l, s)
 		}
 	}
-	return discord.NewCommand(infoCommand, infoCommandHandler(findByCodes, matchName, lfunc))
+	return discord.NewCommand(infoCommand, infoCommandHandler(findByCodes, matchName, lfunc, findLang))
 }
 
 func infoCommandHandler(
 	findByCodes findByCodesFunc,
 	matchName matchNameFunc,
-	localizeBuilder localizeBuildFunc) discord.Handler {
+	localizeBuilder localizeBuildFunc,
+	findLang getLangFunc) discord.Handler {
 
 	return func(s discord.Session, in *discordgo.InteractionCreate) error {
 		switch in.Type {
 		case discordgo.InteractionApplicationCommandAutocomplete:
-			return s.InteractionRespond(in.Interaction, infoAutocompleteHandler(matchName, in))
+			return s.InteractionRespond(in.Interaction, infoAutocompleteHandler(matchName, findLang, in))
 		case discordgo.InteractionApplicationCommand:
 			s.InteractionRespond(in.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseDeferredChannelMessageWithSource,
@@ -68,16 +73,20 @@ func infoCommandHandler(
 				},
 			})
 
+			ctx := context.Background()
 			options := in.ApplicationCommandData().Options
 			cardName, err := option.Get[string](options, "name")
 			if err != nil {
 				return discord.ErrorResponse(s, in, errors.New("missing name"))
 			}
 
-			language := option.GetOrElse(options, "language", string(i18n.Default))
+			defaultLang, _ := findLang(ctx, in.GuildID)
+			if defaultLang == "" {
+				defaultLang = string(i18n.Default)
+			}
+			language := option.GetOrElse(options, "language", defaultLang)
 			localize := localizeBuilder(language)
 
-			ctx := context.Background()
 			cs, err := findByCodes(ctx, language, cardName)
 			if err != nil || len(cs) < 1 {
 				return discord.ErrorResponse(s, in, errors.New("invalid code: "+cardName))
@@ -175,12 +184,16 @@ func cardToEmbed(localize func(string) string) func(c *repository.Card, _ int) *
 	}
 }
 
-func infoAutocompleteHandler(matchName matchNameFunc, in *discordgo.InteractionCreate) *discordgo.InteractionResponse {
+func infoAutocompleteHandler(matchName matchNameFunc, findLang getLangFunc, in *discordgo.InteractionCreate) *discordgo.InteractionResponse {
 	data := in.ApplicationCommandData()
 	o := data.Options
 
 	name, _ := option.Get[string](o, "name")
-	language := option.GetOrElse(o, "language", string(i18n.Default))
+	defaultLang, _ := findLang(context.Background(), in.GuildID)
+	if defaultLang == "" {
+		defaultLang = string(i18n.Default)
+	}
+	language := option.GetOrElse(o, "language", defaultLang)
 
 	choices, err := matchName(context.Background(), language, name)
 	if err != nil {

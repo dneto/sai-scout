@@ -201,3 +201,82 @@ func customFieldsPipeline() []bson.D {
 		{{Key: "$sort", Value: bson.D{{Key: "cardcode", Value: 1}}}},
 	}
 }
+
+func SaveLang(cli *mongo.Client) func(ctx context.Context, guild string, lang string) error {
+	return func(ctx context.Context, guild string, lang string) error {
+		coll := cli.Database(database).Collection("config")
+		_, err := coll.UpdateOne(ctx,
+			bson.D{{
+				Key: "guild", Value: guild,
+			}},
+			bson.D{
+				{Key: "$set", Value: bson.D{
+					{Key: "language", Value: lang},
+				}},
+			}, options.Update().SetUpsert(true),
+		)
+
+		return err
+	}
+}
+
+func SaveURLTemplate(cli *mongo.Client) func(ctx context.Context, guild string, template string, label string) error {
+	return func(ctx context.Context, guild, template, label string) error {
+		coll := cli.Database(database).Collection("config")
+
+		_, err := coll.UpdateOne(ctx,
+			bson.D{{
+				Key: "guild", Value: guild,
+			}},
+			bson.D{
+				{Key: "$set", Value: bson.D{
+					{Key: "template", Value: template},
+					{Key: "label", Value: label},
+				}},
+			}, options.Update().SetUpsert(true),
+		)
+		return err
+	}
+}
+
+func GetLang(cli *mongo.Client) func(ctx context.Context, guild string) (string, error) {
+	return func(ctx context.Context, guild string) (string, error) {
+		coll := cli.Database(database).Collection("config")
+		r := coll.FindOne(ctx, bson.D{{
+			Key: "guild", Value: guild,
+		}})
+
+		config := make(map[string]string)
+		if r.Err() != nil {
+			return "", r.Err()
+		}
+
+		err := r.Decode(&config)
+		if err != nil {
+			return "", err
+		}
+
+		return config["language"], nil
+	}
+}
+
+func GetTemplate(cli *mongo.Client) func(ctx context.Context, guild string) (string, string, error) {
+	return func(ctx context.Context, guild string) (string, string, error) {
+		coll := cli.Database(database).Collection("config")
+		r := coll.FindOne(ctx, bson.D{{
+			Key: "guild", Value: guild,
+		}})
+
+		config := make(map[string]string)
+		if r.Err() != nil {
+			return "", "", r.Err()
+		}
+
+		err := r.Decode(&config)
+		if err != nil {
+			return "", "", err
+		}
+
+		return config["template"], config["label"], nil
+	}
+}

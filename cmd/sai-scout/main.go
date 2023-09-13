@@ -23,7 +23,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-const lorVersion = "4.9.0"
+const lorVersion = "4.10.0"
 
 type config struct {
 	DiscordToken string `env:"DISCORD_TOKEN"`
@@ -53,21 +53,22 @@ func main() {
 		}
 	}()
 
-	err = repository.UpdateSetBundles(ctx, lorVersion, repository.InsertBuilder(cli))
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to retrieve set bundles")
-	}
+	// err = repository.UpdateSetBundles(ctx, lorVersion, repository.InsertBuilder(cli))
+	// if err != nil {
+	// 	log.Fatal().Err(err).Msg("Failed to retrieve set bundles")
+	// }
 
 	session, err := setupBot(cfg.DiscordToken, cli)
+
+	if err != nil {
+		log.Fatal().Err(err).Msg("Failed to setup discord bot")
+	}
+
 	defer func() {
 		if err := session.Close(); err != nil {
 			log.Error().Err(err).Msg("Failed to close discord connection")
 		}
 	}()
-
-	if err != nil {
-		log.Fatal().Err(err).Msg("Failed to setup discord bot")
-	}
 
 	log.Info().Msg("Bot is now running.  Press CTRL-C to exit.")
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -101,17 +102,19 @@ func setupBot(token string, cli *mongo.Client) (*discordgo.Session, error) {
 	findCards := repository.FindCardsBuilder(cli)
 	searchByName := repository.SearchByNameBuilder(cli)
 
-	decode := deck.BuildDecode(findCards)
-	localizer := i18n.LoadTranslations()
+	decode := deck.BuildLoadDeckInfo(findCards)
+	localizeFunc := i18n.LoadTranslations().Localize
+	getLang := repository.GetLang(cli)
+	getTemplate := repository.GetTemplate(cli)
 
 	return mo.TupleToResult(discord.NewSession(token, discordgo.IntentGuildMessages)).
 		Map(discord.Open).
 		Map(discord.UpdateStatus(0, fmt.Sprintf("version %s", lorVersion))).
 		Map(discord.OverwriteAndHandleCommands(
-			commands.Deck(decode, localizer.Localize),
-			commands.Info(findCards, searchByName, localizer.Localize),
+			commands.Deck(decode, localizeFunc, getLang, getTemplate),
+			commands.Info(findCards, searchByName, localizeFunc, getLang),
 			commands.InviteCommand,
 			commands.HelpCommand,
-		)).
-		Get()
+			commands.Config(repository.SaveLang(cli), repository.SaveURLTemplate(cli)),
+		)).Get()
 }

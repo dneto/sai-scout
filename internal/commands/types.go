@@ -15,3 +15,5 @@ type localizeFunc func(language string, messageID string) string
 type localizeBuildFunc func(string) func(string) string
 
 type interactionHandler func(s *discordgo.Session, in *discordgo.InteractionCreate) (*discordgo.InteractionResponse, error)
+type getLangFunc func(ctx context.Context, guildID string) (string, error)
+type getTemplateFunc func(ctx context.Context, guildID string) (string, string, error)

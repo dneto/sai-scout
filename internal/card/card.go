@@ -23,3 +23,7 @@ func IsLandmark(c *repository.Card) bool {
 func IsEquipment(c *repository.Card) bool {
 	return c.TypeRef == "Equipment"
 }
+
+func CardCode(c *repository.Card) string {
+	return c.CardCode
+}

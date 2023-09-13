@@ -14,8 +14,10 @@
   - [Commands](#commands)
     - [`/deck`](#deck)
     - [`/info`](#info)
+    - [`/config`](#config)
+      - [`/config language` Sets the default language for the current server](#config-language-sets-the-default-language-for-the-current-server)
+      - [`/config website` Configures the website in the "View in" button in `/deck` command](#config-website-configures-the-website-in-the-view-in-button-in-deck-command)
   - [Contributing](#contributing)
-  - [Roadmap](#roadmap)
 
 ## Overview
 
@@ -64,10 +66,24 @@ Shows details like region, cost, name, keywords, description, artist, card art, 
 ![Example of /deck command output](screenshots/infocommand.png)
 </details>
 
+### `/config`
+
+> ⚠️ These commands are only available to users with "Manage Server" permissions
+
+#### `/config language` Sets the default language for the current server
+
+**Options**
+
+- **language**: Language which the output of commands must be showed.
+
+#### `/config website` Configures the website in the "View in" button in `/deck` command
+
+**Options**
+
+- **template**: Template for the site that will show the deck. Example:
+  https://runeterra.ar/decks/code/{{code}}
+- **label**: The name of the website to be shown in the button
+
 ## Contributing
 
 Fell free to contribute with suggestions and code!
-
-## Roadmap
-
- - Add a command to view info by card name

@@ -1,7 +1,7 @@
-version: '3'
+version: 3
 services:
   sai-scout:
-    build: .
+    build: Dockerfile
     environment:
       MONGO_URI: mongodb://root:root@mongo
       DISCORD_TOKEN: ${DISCORD_TOKEN}
