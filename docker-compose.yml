@@ -1,0 +1,13 @@
+version: '3'
+services:
+  sai-scout:
+    build: .
+    environment:
+      MONGO_URI: mongodb://root:root@mongo
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+  mongo:
+    image: mongo:6
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
